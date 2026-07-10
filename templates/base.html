@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Trekking Management Application{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        
+        <!-- Sidebar (Only for logged-in users) -->
+        {% if session.get('user_id') %}
+        <div class="bg-white border-end" id="sidebar-wrapper">
+            <div class="sidebar-heading text-center py-4 text-primary fw-bold fs-5 border-bottom">
+                <i class="fa-solid fa-mountain me-2"></i>TrekApp
+            </div>
+            <div class="list-group list-group-flush my-3">
+                
+                {% if session.get('role') == 'Admin' %}
+                    <a href="{{ url_for('admin.admin_dashboard') }}" class="list-group-item list-group-item-action bg-transparent {% if request.endpoint == 'admin.admin_dashboard' %}active text-primary fw-bold{% else %}text-secondary fw-semibold{% endif %}">
+                        <i class="fa-solid fa-chart-line me-2"></i>Dashboard
+                    </a>
+                    <a href="{{ url_for('admin.admin_treks') }}" class="list-group-item list-group-item-action bg-transparent {% if request.endpoint == 'admin.admin_treks' %}active text-primary fw-bold{% else %}text-secondary fw-semibold{% endif %}">
+                        <i class="fa-solid fa-map-location-dot me-2"></i>Treks
+                    </a>
+                    <a href="{{ url_for('admin.admin_staff') }}" class="list-group-item list-group-item-action bg-transparent {% if request.endpoint == 'admin.admin_staff' %}active text-primary fw-bold{% else %}text-secondary fw-semibold{% endif %}">
+                        <i class="fa-solid fa-id-badge me-2"></i>Staff
+                    </a>
+                    <a href="{{ url_for('admin.admin_users') }}" class="list-group-item list-group-item-action bg-transparent {% if request.endpoint == 'admin.admin_users' %}active text-primary fw-bold{% else %}text-secondary fw-semibold{% endif %}">
+                        <i class="fa-solid fa-users me-2"></i>Users
+                    </a>
+                    <a href="{{ url_for('admin.admin_bookings') }}" class="list-group-item list-group-item-action bg-transparent {% if request.endpoint == 'admin.admin_bookings' %}active text-primary fw-bold{% else %}text-secondary fw-semibold{% endif %}">
+                        <i class="fa-solid fa-calendar-check me-2"></i>Bookings
+                    </a>
+                
+                {% elif session.get('role') == 'Staff' %}
+                    <a href="{{ url_for('staff.staff_dashboard') }}" class="list-group-item list-group-item-action bg-transparent {% if request.endpoint == 'staff.staff_dashboard' %}active text-primary fw-bold{% else %}text-secondary fw-semibold{% endif %}">
+                        <i class="fa-solid fa-chart-line me-2"></i>My Dashboard
+                    </a>
+                
+                {% elif session.get('role') == 'User' %}
+                    <a href="{{ url_for('user.user_dashboard') }}" class="list-group-item list-group-item-action bg-transparent {% if request.endpoint == 'user.user_dashboard' %}active text-primary fw-bold{% else %}text-secondary fw-semibold{% endif %}">
+                        <i class="fa-solid fa-compass me-2"></i>Browse Treks
+                    </a>
+                    <a href="{{ url_for('user.user_bookings') }}" class="list-group-item list-group-item-action bg-transparent {% if request.endpoint == 'user.user_bookings' %}active text-primary fw-bold{% else %}text-secondary fw-semibold{% endif %}">
+                        <i class="fa-solid fa-calendar-check me-2"></i>My Bookings
+                    </a>
+                {% endif %}
+                
+                <a href="{{ url_for('auth.logout') }}" class="list-group-item list-group-item-action bg-transparent text-danger fw-semibold mt-auto position-absolute bottom-0 mb-3" style="width: 250px;">
+                    <i class="fa-solid fa-right-from-bracket me-2"></i>Logout
+                </a>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Page Content -->
+        <div id="page-content-wrapper" class="w-100 bg-light">
+            
+            <!-- Top Navbar (Mobile toggle & User Profile) -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-4 py-3">
+                <div class="d-flex align-items-center w-100">
+                    {% if not session.get('user_id') %}
+                        <a class="navbar-brand text-primary fw-bold fs-4" href="{{ url_for('home') }}">
+                            <i class="fa-solid fa-mountain me-2"></i>TrekApp
+                        </a>
+                    {% endif %}
+                    
+                    <div class="ms-auto d-flex align-items-center">
+                        {% if session.get('user_id') %}
+                            <div class="dropdown">
+                                <a class="nav-link dropdown-toggle text-dark fw-medium d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-solid fa-circle-user fs-4 me-2 text-secondary"></i>
+                                    {{ session.get('name') }} <span class="badge bg-secondary ms-2">{{ session.get('role') }}</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="navbarDropdown">
+                                    {% if session.get('role') == 'User' %}
+                                    <li><a class="dropdown-item" href="{{ url_for('user.user_profile') }}">My Profile</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    {% endif %}
+                                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                                </ul>
+                            </div>
+                        {% else %}
+                            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary me-2 fw-medium">Login</a>
+                            <a href="{{ url_for('auth.register') }}" class="btn btn-primary fw-medium">Register</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Content Area -->
+            <div class="container-fluid p-4">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

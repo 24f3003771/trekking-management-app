@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Trek Management Application{% endblock %}
+{% block content %}
+<style>
+    /* Full screen background for landing page */
+    #page-content-wrapper {
+        background: url("{{ url_for('static', filename='images/landing_page.jpg') }}") no-repeat center center / cover !important;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    .landing-content {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 1.5rem;
+        padding: 3rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+</style>
+
+<div class="container d-flex align-items-center justify-content-center" style="min-height: calc(100vh - 150px);">
+    <div class="landing-content text-center">
+        <h1 class="display-3 fw-bold text-dark mb-4">Adventure Awaits. <br><span class="text-primary">Discover the Unknown.</span></h1>
+        <p class="lead text-dark fw-semibold mb-5">Efficiently manage trekking activities, organize staff, and book your next grand expedition with ease.</p>
+        <div class="d-flex justify-content-center gap-3">
+            {% if session.get('user_id') %}
+                {% if session.get('role') == 'Admin' %}
+                    <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-primary btn-lg px-4 fw-bold shadow-sm">Go to Dashboard</a>
+                {% elif session.get('role') == 'Staff' %}
+                    <a href="{{ url_for('staff.staff_dashboard') }}" class="btn btn-primary btn-lg px-4 fw-bold shadow-sm">Go to Dashboard</a>
+                {% else %}
+                    <a href="{{ url_for('user.user_dashboard') }}" class="btn btn-primary btn-lg px-4 fw-bold shadow-sm">Browse Treks</a>
+                {% endif %}
+            {% else %}
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4 fw-bold shadow-sm">Get Started</a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-dark btn-lg px-4 fw-bold">Login</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

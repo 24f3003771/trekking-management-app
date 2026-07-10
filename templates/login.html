@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Login - TrekApp{% endblock %}
+{% block content %}
+<style>
+    /* Override base styles for login page only */
+    #page-content-wrapper {
+        background: url("{{ url_for('static', filename='images/login_page.jpg') }}") no-repeat center center / cover !important;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    .login-container {
+        min-height: calc(100vh - 150px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -1.5rem;
+    }
+    .glass-card {
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 1.5rem;
+        padding: 3rem 2.5rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        width: 100%;
+        max-width: 420px;
+    }
+    .btn-login {
+        background-color: #2E6050; /* Dark teal matching the image map pin */
+        border: none;
+        border-radius: 10px;
+        padding: 0.8rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .btn-login:hover {
+        background-color: #1D4337;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(29, 67, 55, 0.3);
+    }
+    .login-title {
+        color: #1D4337;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+    .input-group-text, .form-control {
+        background: rgba(255, 255, 255, 0.7) !important;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        padding: 0.75rem 1rem;
+    }
+    .form-control:focus {
+        box-shadow: 0 0 0 3px rgba(46, 96, 80, 0.2);
+        border-color: #2E6050;
+    }
+</style>
+
+<div class="login-container w-100">
+    <div class="glass-card">
+        <h2 class="text-center login-title mb-4">Welcome Back</h2>
+        <form action="{{ url_for('auth.login') }}" method="POST">
+            <div class="mb-3">
+                <label class="form-label text-dark fw-bold ms-1">Email Address</label>
+                <div class="input-group">
+                    <span class="input-group-text border-end-0 text-muted"><i class="fa-solid fa-envelope"></i></span>
+                    <input type="email" class="form-control border-start-0" name="email" required placeholder="name@example.com">
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="form-label text-dark fw-bold ms-1">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text border-end-0 text-muted"><i class="fa-solid fa-lock"></i></span>
+                    <input type="password" class="form-control border-start-0" name="password" required placeholder="••••••••">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-login btn-primary w-100 text-white">Sign In</button>
+        </form>
+        <div class="text-center mt-4">
+            <p class="text-dark mb-2 fw-medium">New to TrekApp? <a href="{{ url_for('auth.register') }}" class="text-decoration-none fw-bold" style="color: #2E6050;">Create an account</a></p>
+            <p class="text-dark mb-0 fs-6 fw-medium">Are you staff? <a href="{{ url_for('auth.register_staff') }}" class="text-decoration-none fw-bold" style="color: #2E6050;">Apply here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
