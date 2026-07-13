@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="text-dark fw-bold mb-0">Dashboard</h3>
+    <span class="text-muted"><i class="fa-regular fa-calendar me-2"></i>Today</span>
+</div>
+
+<!-- Stats Row -->
+<div class="row g-4 mb-5">
+    <div class="col-md-3">
+        <div class="card h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-secondary text-uppercase mb-1">Total Treks</h6>
+                    <h2 class="text-dark mb-0 fw-bold">{{ total_treks }}</h2>
+                </div>
+                <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-circle">
+                    <i class="fa-solid fa-mountain fs-4"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-secondary text-uppercase mb-1">Total Users</h6>
+                    <h2 class="text-dark mb-0 fw-bold">{{ total_users }}</h2>
+                </div>
+                <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-circle">
+                    <i class="fa-solid fa-user fs-4"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-secondary text-uppercase mb-1">Total Staff</h6>
+                    <h2 class="text-dark mb-0 fw-bold">{{ total_staff }}</h2>
+                </div>
+                <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-circle">
+                    <i class="fa-solid fa-id-badge fs-4"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-secondary text-uppercase mb-1">Total Bookings</h6>
+                    <h2 class="text-dark mb-0 fw-bold">{{ total_bookings }}</h2>
+                </div>
+                <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-circle">
+                    <i class="fa-solid fa-calendar-check fs-4"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Bookings Table -->
+<div class="card shadow-sm">
+    <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 text-dark fw-bold">Recent Bookings</h5>
+        <a href="{{ url_for('admin.admin_bookings') }}" class="btn btn-sm btn-outline-primary">View All</a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Booking ID</th>
+                        <th>User</th>
+                        <th>Trek Name</th>
+                        <th>Booking Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in recent_bookings %}
+                    <tr>
+                        <td class="ps-4">#{{ booking.booking_id }}</td>
+                        <td class="fw-medium text-dark">{{ booking.user_name }}</td>
+                        <td>{{ booking.trek_name }}</td>
+                        <td>{{ booking.booking_date.split(' ')[0] if booking.booking_date else '' }}</td>
+                        <td>
+                            <span class="badge rounded-pill 
+                                {% if booking.status == 'Confirmed' %}bg-success
+                                {% elif booking.status == 'Cancelled' %}bg-danger
+                                {% else %}bg-secondary{% endif %}">
+                                {{ booking.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No recent bookings found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

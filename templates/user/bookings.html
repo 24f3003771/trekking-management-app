@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}My Bookings - TrekApp{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="text-dark fw-bold mb-0">Trekking History & Bookings</h3>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Trek Name</th>
+                        <th>Dates</th>
+                        <th>Booking Date</th>
+                        <th>Status</th>
+                        <th class="text-end pe-4">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td class="ps-4 fw-bold text-dark">{{ booking.name }}</td>
+                        <td>{{ booking.start_date }} - {{ booking.end_date }}</td>
+                        <td>{{ booking.booking_date.split(' ')[0] if booking.booking_date else '' }}</td>
+                        <td>
+                            <span class="badge 
+                                {% if booking.booking_status == 'Confirmed' %}bg-success
+                                {% elif booking.booking_status == 'Cancelled' %}bg-danger
+                                {% else %}bg-secondary{% endif %}">
+                                {{ booking.booking_status }}
+                            </span>
+                        </td>
+                        <td class="text-end pe-4">
+                            {% if booking.booking_status == 'Confirmed' and booking.status == 'Open' %}
+                            <form action="{{ url_for('user.cancel_booking', booking_id=booking.booking_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Cancel Booking</button>
+                            </form>
+                            {% else %}
+                            <a href="{{ url_for('user_trek_details', trek_id=booking.id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            <i class="fa-solid fa-calendar-xmark fs-2 mb-3 text-secondary opacity-50 d-block"></i>
+                            You have no bookings. Go browse some treks!
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
