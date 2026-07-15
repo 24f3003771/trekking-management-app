@@ -139,18 +139,23 @@ def admin_user_delete(user_id):
 def admin_staff():
     search = request.args.get('search', '')
     if search:
-        staff = Staff.query.filter(
+        staff_list = Staff.query.filter(
             (Staff.name.ilike(f'%{search}%')) | 
             (Staff.email.ilike(f'%{search}%')) |
             (Staff.id == (int(search) if search.isdigit() else -1))
         ).all()
     else:
-        staff = Staff.query.all()
-    return render_template('admin/staff.html', staff=staff, search=search)
+        staff_list = Staff.query.all()
+        
+    pending = [s for s in staff_list if s.status == 'Pending']
+    approved = [s for s in staff_list if s.status == 'Approved']
+    blacklisted = [s for s in staff_list if s.status == 'Blacklisted']
+    
+    return render_template('admin/staff.html', pending=pending, approved=approved, blacklisted=blacklisted, search=search)
 
-@admin_bp.route('/admin/staff/approve/<int:staff_id>', methods=['POST'])
+@admin_bp.route('/admin/staff/update_status/<int:staff_id>', methods=['POST'])
 @admin_required
-def admin_staff_approve(staff_id):
+def admin_staff_update_status(staff_id):
     staff = Staff.query.get_or_404(staff_id)
     new_status = request.form.get('status')
     staff.status = new_status
