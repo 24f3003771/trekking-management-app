@@ -69,43 +69,18 @@ def admin_trek_create():
         name=name, location=location, difficulty=difficulty,
         duration=duration, start_date=start_date, end_date=end_date,
         available_slots=available_slots, assigned_staff_id=assigned_staff_id,
-        status='Pending'
+        status='Open'
     )
     db.session.add(new_trek)
     db.session.commit()
     flash('Trek created successfully!', 'success')
     return redirect(url_for('admin.admin_treks'))
 
-@admin_bp.route('/admin/trek/edit/<int:trek_id>', methods=['POST'])
-@admin_required
-def admin_trek_edit(trek_id):
-    trek = Trek.query.get_or_404(trek_id)
-    trek.name = request.form.get('name')
-    trek.location = request.form.get('location')
-    trek.difficulty = request.form.get('difficulty')
-    trek.duration = request.form.get('duration')
-    
-    start_date = request.form.get('start_date')
-    end_date = request.form.get('end_date')
-    import datetime
-    trek.start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d').date() if start_date else None
-    trek.end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d').date() if end_date else None
-    
-    trek.available_slots = request.form.get('available_slots')
-    
-    assigned_staff_id = request.form.get('assigned_staff_id')
-    trek.assigned_staff_id = int(assigned_staff_id) if assigned_staff_id else None
-    
-    trek.status = request.form.get('status')
-    
-    db.session.commit()
-    flash('Trek updated successfully!', 'success')
-    return redirect(url_for('admin.admin_treks'))
-
 @admin_bp.route('/admin/trek/delete/<int:trek_id>', methods=['POST'])
 @admin_required
 def admin_trek_delete(trek_id):
     trek = Trek.query.get_or_404(trek_id)
+    Booking.query.filter_by(trek_id=trek.id).delete()
     db.session.delete(trek)
     db.session.commit()
     flash('Trek deleted.', 'info')
