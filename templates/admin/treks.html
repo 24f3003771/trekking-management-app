@@ -49,7 +49,7 @@
                             {% if trek.assigned_staff_id %}
                                 {{ trek.staff_name }}
                             {% else %}
-                                <form action="{{ url_for('admin_trek_assign', trek_id=trek.id) }}" method="POST" class="d-flex">
+                                <form action="{{ url_for('admin.admin_trek_assign', trek_id=trek.id) }}" method="POST" class="d-flex">
                                     <select name="staff_id" class="form-select form-select-sm me-1" style="width:120px;" required>
                                         <option value="" disabled selected>Assign</option>
                                         {% for staff in approved_staff %}

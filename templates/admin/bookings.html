@@ -24,10 +24,10 @@
                 <tbody>
                     {% for booking in bookings %}
                     <tr>
-                        <td class="ps-4 fw-bold">#{{ booking.booking_id }}</td>
-                        <td class="fw-medium text-dark">{{ booking.user_name }}</td>
-                        <td>{{ booking.trek_name }}</td>
-                        <td>{{ booking.booking_date.split(' ')[0] if booking.booking_date else '' }}</td>
+                        <td class="ps-4 fw-bold">#{{ booking.id }}</td>
+                        <td class="fw-medium text-dark">{{ booking.user.name }}</td>
+                        <td>{{ booking.trek.name }}</td>
+                        <td>{{ booking.booking_date.strftime('%Y-%m-%d') if booking.booking_date else '' }}</td>
                         <td>
                             <span class="badge rounded-pill 
                                 {% if booking.status == 'Confirmed' %}bg-success

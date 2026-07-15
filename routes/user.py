@@ -9,16 +9,32 @@ user_bp = Blueprint('user', __name__)
 @user_required
 def user_dashboard():
     search = request.args.get('search', '')
+    difficulty = request.args.get('difficulty', '')
+    location = request.args.get('location', '')
+    
+    query = Trek.query.filter(Trek.status.in_(['Approved', 'Open']))
+    
     if search:
-        available_treks = Trek.query.filter(
-            Trek.status.in_(['Approved', 'Open']),
-            ((Trek.name.ilike(f'%{search}%')) | 
-             (Trek.location.ilike(f'%{search}%')))
-        ).all()
-    else:
-        available_treks = Trek.query.filter(Trek.status.in_(['Approved', 'Open'])).all()
+        query = query.filter(
+            (Trek.name.ilike(f'%{search}%')) | 
+            (Trek.location.ilike(f'%{search}%'))
+        )
+    if difficulty:
+        query = query.filter(Trek.difficulty == difficulty)
+    if location:
+        query = query.filter(Trek.location == location)
         
-    return render_template('user/dashboard.html', treks=available_treks, search=search)
+    available_treks = query.all()
+    
+    # Get distinct locations for the dropdown
+    locations = Trek.query.with_entities(Trek.location).filter(Trek.status.in_(['Approved', 'Open'])).distinct().all()
+        
+    return render_template('user/dashboard.html', 
+                           treks=available_treks, 
+                           search_query=search,
+                           difficulty=difficulty,
+                           selected_location=location,
+                           locations=locations)
 
 @user_bp.route('/trek/<int:trek_id>')
 @user_required

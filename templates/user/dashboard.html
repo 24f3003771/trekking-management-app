@@ -15,7 +15,7 @@
                 <input type="text" class="form-control" name="search" placeholder="Search by trek name..." value="{{ search_query }}">
             </div>
             <div class="col-md-3">
-                <select class="form-select" name="difficulty">
+                <select class="form-select" name="difficulty" onchange="this.form.submit()">
                     <option value="">All Difficulties</option>
                     <option value="Easy" {% if difficulty == 'Easy' %}selected{% endif %}>Easy</option>
                     <option value="Moderate" {% if difficulty == 'Moderate' %}selected{% endif %}>Moderate</option>
@@ -23,7 +23,7 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <select class="form-select" name="location">
+                <select class="form-select" name="location" onchange="this.form.submit()">
                     <option value="">All Locations</option>
                     {% for loc in locations %}
                     <option value="{{ loc.location }}" {% if selected_location == loc.location %}selected{% endif %}>{{ loc.location }}</option>
@@ -58,7 +58,7 @@
                         <td>{{ trek.duration }} Days</td>
                         <td>{{ trek.available_slots }}</td>
                         <td class="text-end pe-4">
-                            <a href="{{ url_for('user_trek_details', trek_id=trek.id) }}" class="btn btn-sm btn-primary fw-medium px-3">Book Now</a>
+                            <a href="{{ url_for('user.trek_details', trek_id=trek.id) }}" class="btn btn-sm btn-primary fw-medium px-3">Book Now</a>
                         </td>
                     </tr>
                     {% else %}

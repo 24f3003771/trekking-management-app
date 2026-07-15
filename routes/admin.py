@@ -35,6 +35,17 @@ def admin_treks():
     approved_staff = Staff.query.filter_by(status='Approved').all()
     return render_template('admin/treks.html', treks=treks, approved_staff=approved_staff, search=search)
 
+@admin_bp.route('/admin/trek/assign/<int:trek_id>', methods=['POST'])
+@admin_required
+def admin_trek_assign(trek_id):
+    trek = Trek.query.get_or_404(trek_id)
+    staff_id = request.form.get('staff_id')
+    if staff_id:
+        trek.assigned_staff_id = int(staff_id)
+        db.session.commit()
+        flash('Staff assigned successfully!', 'success')
+    return redirect(url_for('admin.admin_treks'))
+
 @admin_bp.route('/admin/trek/create', methods=['POST'])
 @admin_required
 def admin_trek_create():

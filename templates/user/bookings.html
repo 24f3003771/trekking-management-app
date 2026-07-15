@@ -21,24 +21,24 @@
                 <tbody>
                     {% for booking in bookings %}
                     <tr>
-                        <td class="ps-4 fw-bold text-dark">{{ booking.name }}</td>
-                        <td>{{ booking.start_date }} - {{ booking.end_date }}</td>
-                        <td>{{ booking.booking_date.split(' ')[0] if booking.booking_date else '' }}</td>
+                        <td class="ps-4 fw-bold text-dark">{{ booking.trek.name }}</td>
+                        <td>{{ booking.trek.start_date }} - {{ booking.trek.end_date }}</td>
+                        <td>{{ booking.booking_date.strftime('%Y-%m-%d') if booking.booking_date else '' }}</td>
                         <td>
                             <span class="badge 
-                                {% if booking.booking_status == 'Confirmed' %}bg-success
-                                {% elif booking.booking_status == 'Cancelled' %}bg-danger
+                                {% if booking.status == 'Confirmed' %}bg-success
+                                {% elif booking.status == 'Cancelled' %}bg-danger
                                 {% else %}bg-secondary{% endif %}">
-                                {{ booking.booking_status }}
+                                {{ booking.status }}
                             </span>
                         </td>
                         <td class="text-end pe-4">
-                            {% if booking.booking_status == 'Confirmed' and booking.status == 'Open' %}
-                            <form action="{{ url_for('user.cancel_booking', booking_id=booking.booking_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                            {% if booking.status == 'Confirmed' and booking.trek.status == 'Open' %}
+                            <form action="{{ url_for('user.cancel_booking', booking_id=booking.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Cancel Booking</button>
                             </form>
                             {% else %}
-                            <a href="{{ url_for('user_trek_details', trek_id=booking.id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+                            <a href="{{ url_for('user.trek_details', trek_id=booking.trek.id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
                             {% endif %}
                         </td>
                     </tr>

@@ -25,6 +25,26 @@ def staff_manage_trek(trek_id):
     
     return render_template('staff/manage_trek.html', trek=trek, bookings=bookings)
 
+@staff_bp.route('/staff/update_trek/<int:trek_id>', methods=['POST'])
+@staff_required
+def staff_update_trek(trek_id):
+    if session.get('status') != 'Approved':
+        return redirect(url_for('staff.staff_dashboard'))
+        
+    trek = Trek.query.filter_by(id=trek_id, assigned_staff_id=session['user_id']).first_or_404()
+    
+    available_slots = request.form.get('available_slots')
+    status = request.form.get('status')
+    
+    if available_slots is not None:
+        trek.available_slots = int(available_slots)
+    if status:
+        trek.status = status
+        
+    db.session.commit()
+    flash('Trek updated successfully.', 'success')
+    return redirect(url_for('staff.staff_manage_trek', trek_id=trek_id))
+
 @staff_bp.route('/staff/update_booking/<int:booking_id>', methods=['POST'])
 @staff_required
 def staff_update_booking(booking_id):
